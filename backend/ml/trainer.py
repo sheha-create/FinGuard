@@ -119,7 +119,7 @@ class MLTrainer:
 
     def train(self, force_retrain: bool = False) -> dict:
         if_model_path = self.model_dir / "isolation_forest.pkl"
-        ae_model_path = self.model_dir / "autoencoder.pth"
+        ae_model_path = self.model_dir / "autoencoder.pkl"
         
         if not force_retrain and if_model_path.exists() and ae_model_path.exists():
             logger.info("Loading pre-trained models...")
