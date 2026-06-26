@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinGuard - AML Transaction Fraud Analyzer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>FinGuard</h1>
+                <span class="subtitle">AML Transaction Fraud Analyzer</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat">
+                    <span class="stat-label">Transactions</span>
+                    <span class="stat-value" id="tx-count">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Accounts</span>
+                    <span class="stat-value" id="account-count">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Alerts</span>
+                    <span class="stat-value" id="alert-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="graph-panel">
+                <div class="panel-header">
+                    <h2>Transaction Graph</h2>
+                    <div class="graph-controls">
+                        <button id="btn-refresh-graph" class="btn btn-secondary">Refresh</button>
+                        <select id="account-select" class="select">
+                            <option value="">All Accounts</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="graph-container" class="graph-container"></div>
+                <div class="graph-legend">
+                    <div class="legend-item"><span class="legend-color normal"></span><span>Normal</span></div>
+                    <div class="legend-item"><span class="legend-color suspicious"></span><span>Suspicious</span></div>
+                    <div class="legend-item"><span class="legend-color flagged"></span><span>Flagged</span></div>
+                </div>
+            </section>
+
+            <aside class="sidebar">
+                <div class="upload-panel">
+                    <div class="panel-header">
+                        <h2>Upload Data</h2>
+                    </div>
+                    <div class="upload-body">
+                        <div id="drop-zone" class="drop-zone">
+                            <div class="drop-zone-content">
+                                <span class="drop-icon">+</span>
+                                <p>Drop CSV or JSON file here</p>
+                                <p class="drop-hint">or click to browse</p>
+                            </div>
+                            <input type="file" id="file-input" accept=".csv,.json" hidden>
+                        </div>
+                        <div id="upload-progress" class="upload-progress hidden">
+                            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+                            <span class="progress-text" id="progress-text">Processing...</span>
+                        </div>
+                        <div id="upload-result" class="upload-result hidden"></div>
+                        <div class="upload-info">
+                            <p>CSV columns: sender/from, receiver/to, amount/value, timestamp/date</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert-panel">
+                    <div class="panel-header">
+                        <h2>Alerts</h2>
+                        <div class="alert-filters">
+                            <button class="btn btn-filter active" data-status="open">Open</button>
+                            <button class="btn btn-filter" data-status="resolved_false_positive">FP</button>
+                            <button class="btn btn-filter" data-status="confirmed">Confirmed</button>
+                            <button class="btn btn-filter" data-status="">All</button>
+                        </div>
+                    </div>
+                    <div id="alert-list" class="alert-list">
+                        <div class="loading">No alerts yet. Upload transaction data to begin analysis.</div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <div id="alert-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Alert Details</h3>
+                    <button id="btn-close-modal" class="btn-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="detail-row">
+                        <span class="label">Pattern:</span>
+                        <span id="detail-pattern" class="value"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Risk Score:</span>
+                        <span id="detail-risk" class="value risk-badge"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Accounts:</span>
+                        <span id="detail-accounts" class="value"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Transactions:</span>
+                        <span id="detail-txs" class="value"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Description:</span>
+                        <span id="detail-description" class="value"></span>
+                    </div>
+                    <div class="modal-graph" id="modal-graph"></div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-false-positive" class="btn btn-success">Mark False Positive</button>
+                    <button id="btn-confirm" class="btn btn-danger">Confirm Fraud</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/graph.js"></script>
+    <script src="/static/js/alerts.js"></script>
+    <script src="/static/js/upload.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
